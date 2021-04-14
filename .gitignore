@@ -1,0 +1,7 @@
+*
+!.gitignore
+!q?.cpp
+!PS?.pdf
+!pa?.cpp
+!PA?.pdf
+!*/
