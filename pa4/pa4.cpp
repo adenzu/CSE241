@@ -467,16 +467,22 @@ Program::Program(ifstream &instructionFile, istream &_input, ostream &_output)
 
 Program::~Program()
 {
-    for(int i = 0; i < operationCount; ++i)
+    for(int i = 0; i < operationCount; ++i){
         delete operations[i];
+        operations[i] = nullptr;
+    }
     delete [] operations;
 
-    for(int i = 0; i < variableCount; ++i)
+    for(int i = 0; i < variableCount; ++i){
         delete variables[i];
+        variables[i] = nullptr;
+    }
     delete [] variables;
 
-    for(int i = 0; i < outputVariableCount; ++i)
-        delete (outputVariables[i]);
+    for(int i = 0; i < outputVariableCount; ++i){
+        delete outputVariables[i];
+        outputVariables[i] = nullptr;
+    }
     delete [] outputVariables;
 }
 
