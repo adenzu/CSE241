@@ -479,10 +479,6 @@ Program::~Program()
     }
     delete [] variables;
 
-    for(int i = 0; i < outputVariableCount; ++i){
-        delete outputVariables[i];
-        outputVariables[i] = nullptr;
-    }
     delete [] outputVariables;
 }
 
