@@ -177,7 +177,7 @@ Operation::Operation(Variable **_variables, int _variableCount)
 
 Operation::~Operation()
 {
-    // blank
+    delete [] variables;
 }
 
 void Operation::AddVariable(Variable *newVariable){
@@ -638,5 +638,8 @@ int main(){
     while(!inputFile.eof())
         myProgram.Run();
     
+    circuitFile.close();
+    inputFile.close();
+
     return 0;
 }
