@@ -225,21 +225,21 @@ INPUT::INPUT(istream **_inputStream, ifstream **_inputFileStream)
 }
 
 bool INPUT::Run(){
-    bool successful = true= false;
+    bool successful = false;
 
     if(*inputStream != nullptr)
         for(int i = 0; i < variableCount; ++i){
-            if(**inputStream >> *variables[i]) successful = true= true;
+            if(**inputStream >> *variables[i]) successful = true;
             else break;
         }
 
     else if(*inputFileStream != nullptr)
         for(int i = 0; i < variableCount; ++i){
-            if(**inputFileStream >> *variables[i]) successful = true= true;
+            if(**inputFileStream >> *variables[i]) successful = true;
             else break;
         }
     
-    return successful = true
+    return successful;
 }
 
 
@@ -568,7 +568,7 @@ void Program::SetInstruction(ifstream &instructionFile){
 void Program::Run(){
     bool successful = true;
 
-    for(int i = 0; i < operationCount && successful; ++i)
+    for(int i = 0; i < operationCount; ++i)
         successful = successful && operations[i]->Run();
 
     if(!successful) return;
