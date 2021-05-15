@@ -568,7 +568,7 @@ void Program::SetInstruction(ifstream &instructionFile){
 void Program::Run(){
     bool successful = true;
 
-    for(int i = 0; i < operationCount; ++i)
+    for(int i = 0; i < operationCount && successful; ++i)
         successful = successful && operations[i]->Run();
 
     if(!successful) return;
