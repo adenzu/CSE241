@@ -156,7 +156,7 @@ class Operation{
 
         void AddVariable(Variable *newVariable);
 
-        virtual void Run();
+        virtual bool Run();
     protected:
         void ResizeVariableArray(int newSize);
 
@@ -200,8 +200,8 @@ void Operation::ResizeVariableArray(int newSize){
     variableCount = newSize;
 }
 
-void Operation::Run(){
-    // blank
+bool Operation::Run(){
+    return true;
 }
 
 
@@ -212,7 +212,7 @@ class INPUT : public Operation{
     public:
         INPUT(istream **_inputStream = nullptr, ifstream **_inputFileStream = nullptr);
 
-        virtual void Run();
+        virtual bool Run();
     private:
         istream **inputStream;
         ifstream **inputFileStream;
@@ -224,15 +224,22 @@ INPUT::INPUT(istream **_inputStream, ifstream **_inputFileStream)
     // blank
 }
 
-void INPUT::Run(){
+bool INPUT::Run(){
+    bool successful = true= false;
 
     if(*inputStream != nullptr)
-        for(int i = 0; i < variableCount; ++i)
-            **inputStream >> *variables[i];
+        for(int i = 0; i < variableCount; ++i){
+            if(**inputStream >> *variables[i]) successful = true= true;
+            else break;
+        }
 
     else if(*inputFileStream != nullptr)
-        for(int i = 0; i < variableCount; ++i)
-            **inputFileStream >> *variables[i];
+        for(int i = 0; i < variableCount; ++i){
+            if(**inputFileStream >> *variables[i]) successful = true= true;
+            else break;
+        }
+    
+    return successful = true
 }
 
 
@@ -243,7 +250,7 @@ class OUTPUT : public Operation{
     public:
         OUTPUT(ostream **_outputStream = nullptr, ofstream **_outputFileStream = nullptr);
 
-        virtual void Run();
+        virtual bool Run();
     private:
         ostream **outputStream;
         ofstream **outputFileStream;
@@ -255,8 +262,8 @@ OUTPUT::OUTPUT(ostream **_outputStream, ofstream **_outputFileStream)
     // blank
 }
 
-void OUTPUT::Run(){
-    // blank
+bool OUTPUT::Run(){
+    return true;
 }
 
 
@@ -267,7 +274,7 @@ class AND : public Operation{
     public:
         AND();
 
-        virtual void Run();
+        virtual bool Run();
     private:
 };
 
@@ -275,14 +282,15 @@ AND::AND()
 {
     // blank
 }
-
-void AND::Run(){
+bool AND::Run(){
     bool result = true;
 
     for(int i = 1; i < variableCount; ++i)
         result = result && *variables[i];
     
     *variables[0] = result;
+
+    return true;
 }
 
 
@@ -293,7 +301,7 @@ class OR : public Operation{
     public:
         OR();
 
-        virtual void Run();
+        virtual bool Run();
     private:
 };
 
@@ -301,14 +309,15 @@ OR::OR()
 {
     // blank
 }
-
-void OR::Run(){
+bool OR::Run(){
     bool result = false;
 
     for(int i = 1; i < variableCount; ++i)
         result = result || *variables[i];
     
     *variables[0] = result;
+
+    return true;
 }
 
 
@@ -319,7 +328,7 @@ class NOT : public Operation{
     public:
         NOT();
 
-        virtual void Run();
+        virtual bool Run();
     private:
 };
 
@@ -327,9 +336,10 @@ NOT::NOT()
 {
     // blank
 }
-
-void NOT::Run(){
+bool NOT::Run(){
     *variables[0] = !*variables[1];
+
+    return true;
 }
 
 
@@ -340,7 +350,7 @@ class FLIPFLOP : public Operation{
     public:
         FLIPFLOP();
 
-        virtual void Run();
+        virtual bool Run();
     private:
         bool output;
 };
@@ -351,10 +361,13 @@ FLIPFLOP::FLIPFLOP()
     // blank
 }
 
-void FLIPFLOP::Run(){
+bool FLIPFLOP::Run(){
     if(*variables[1] == true)
         output = !output;
+
     *variables[0] = output;
+
+    return true;
 }
 
 
@@ -365,7 +378,7 @@ class DECODER : public Operation{
     public:
         DECODER();
 
-        virtual void Run();
+        virtual bool Run();
     private:
 };
 
@@ -374,7 +387,7 @@ DECODER::DECODER()
     // blank
 }
 
-void DECODER::Run(){
+bool DECODER::Run(){
     int inputCount = log2Floor(variableCount);
     int outputIndex = 0;
 
@@ -382,6 +395,8 @@ void DECODER::Run(){
         outputIndex = (outputIndex << 1) | (*variables[i] == true);
 
     *variables[outputIndex] = true;
+
+    return true;
 }
 
 
@@ -551,10 +566,13 @@ void Program::SetInstruction(ifstream &instructionFile){
 }
 
 void Program::Run(){
-    for(int i = 0; i < operationCount; ++i)
-        operations[i]->Run();
+    bool successful = true;
 
-    
+    for(int i = 0; i < operationCount && successful; ++i)
+        successful = successful && operations[i]->Run();
+
+    if(!successful) return;
+
     if(output != nullptr){
         for(int i = 0; i < outputVariableCount; ++i)
             *output << *outputVariables[i] << " ";
