@@ -426,75 +426,66 @@ class Program{
         void ResizeVariableArray(int newSize);
         void ResizeOutputArray(int newSize);
 
+        void Clean();
+        void CleanOperationArray();
+        void CleanVariableArray();
+        void CleanOutputArray();
+
         istream *input;
         ifstream *inputFile;
         ostream *output;
         ofstream *outputFile;
 
         Variable **variables;
-        Variable *inputVariables;
         Variable **outputVariables;
         Operation **operations;
         int variableCount;
-        int inputVariableCount;
         int outputVariableCount;
         int operationCount;
 };
 
 Program::Program() : input(nullptr), inputFile(nullptr), output(nullptr), outputFile(nullptr),
-                     variables(nullptr), inputVariables(nullptr), outputVariables(nullptr), operations(nullptr),
-                     variableCount(0), inputVariableCount(0), outputVariableCount(0), operationCount(0)
+                     variables(nullptr), outputVariables(nullptr), operations(nullptr),
+                     variableCount(0), outputVariableCount(0), operationCount(0)
 {
     // blank
 }
 
 Program::Program(ifstream &instructionFile, ifstream &_input, ofstream &_output) 
                 : input(nullptr), inputFile(&_input), output(nullptr), outputFile(&_output),
-                  variables(nullptr), inputVariables(nullptr), outputVariables(nullptr), operations(nullptr),
-                  variableCount(0), inputVariableCount(0), outputVariableCount(0), operationCount(0)
+                  variables(nullptr), outputVariables(nullptr), operations(nullptr),
+                  variableCount(0), outputVariableCount(0), operationCount(0)
 {
     SetInstruction(instructionFile);
 }
 
 Program::Program(ifstream &instructionFile, istream &_input, ofstream &_output) 
                 : input(&_input), inputFile(nullptr), output(nullptr), outputFile(&_output),
-                  variables(nullptr), inputVariables(nullptr), outputVariables(nullptr), operations(nullptr),
-                  variableCount(0), inputVariableCount(0), outputVariableCount(0), operationCount(0)
+                  variables(nullptr), outputVariables(nullptr), operations(nullptr),
+                  variableCount(0), outputVariableCount(0), operationCount(0)
 {
     SetInstruction(instructionFile);
 }
 
 Program::Program(ifstream &instructionFile, ifstream &_input, ostream &_output) 
                 : input(nullptr), inputFile(&_input), output(&_output), outputFile(nullptr),
-                  variables(nullptr), inputVariables(nullptr), outputVariables(nullptr), operations(nullptr),
-                  variableCount(0), inputVariableCount(0), outputVariableCount(0), operationCount(0)
+                  variables(nullptr), outputVariables(nullptr), operations(nullptr),
+                  variableCount(0), outputVariableCount(0), operationCount(0)
 {
     SetInstruction(instructionFile);
 }
 
 Program::Program(ifstream &instructionFile, istream &_input, ostream &_output) 
                 : input(&_input), inputFile(nullptr), output(&_output), outputFile(nullptr),
-                  variables(nullptr), inputVariables(nullptr), outputVariables(nullptr), operations(nullptr),
-                  variableCount(0), inputVariableCount(0), outputVariableCount(0), operationCount(0)
+                  variables(nullptr), outputVariables(nullptr), operations(nullptr),
+                  variableCount(0), outputVariableCount(0), operationCount(0)
 {
     SetInstruction(instructionFile);
 }
 
 Program::~Program()
 {
-    for(int i = 0; i < operationCount; ++i){
-        delete operations[i];
-        operations[i] = nullptr;
-    }
-    delete [] operations;
-
-    for(int i = 0; i < variableCount; ++i){
-        delete variables[i];
-        variables[i] = nullptr;
-    }
-    delete [] variables;
-
-    delete [] outputVariables;
+    Clean();
 }
 
 Variable * Program::GetVariable(string name){
@@ -505,6 +496,7 @@ Variable * Program::GetVariable(string name){
 }
 
 void Program::SetInstruction(ifstream &instructionFile){
+    Clean();
     string readWord, lastOperationName{};
 
     while(instructionFile >> readWord){
@@ -564,6 +556,27 @@ void Program::SetInstruction(ifstream &instructionFile){
         lastOperationName = readWord;
     }
 }
+
+void Program::SetInput(ifstream &_input){
+    input = nullptr;
+    inputFile = &_input;
+}
+
+void Program::SetInput(istream &_input){
+    inputFile = nullptr;
+    input = &_input;
+}
+
+void Program::SetOutput(ofstream &_output){
+    output = nullptr;
+    outputFile = &_output;
+}
+
+void Program::SetOutput(ostream &_output){
+    outputFile = nullptr;
+    output = &_output;
+}
+
 
 void Program::Run(){
     bool successful = true;
@@ -641,6 +654,41 @@ void Program::ResizeOutputArray(int newSize){
     delete [] outputVariables;
     outputVariables = newOutputVariables;
     outputVariableCount = newSize;
+}
+
+void Program::Clean(){
+    CleanOperationArray();
+    CleanVariableArray();
+    
+    delete [] outputVariables;
+    outputVariableCount = 0;
+}
+
+void Program::CleanOperationArray(){
+    for(int i = 0; i < operationCount; ++i){
+        delete operations[i];
+        operations[i] = nullptr;
+    }
+    delete [] operations;
+    operationCount = 0;
+}
+
+void Program::CleanVariableArray(){
+    for(int i = 0; i < variableCount; ++i){
+        delete variables[i];
+        variables[i] = nullptr;
+    }
+    delete [] variables;
+    variableCount = 0;
+}
+
+void Program::CleanOutputArray(){
+    for(int i = 0; i < outputVariableCount; ++i){
+        delete outputVariables[i];
+        outputVariables[i] = nullptr;
+    }
+    delete [] outputVariables;
+    outputVariableCount = 0;
 }
 
 
