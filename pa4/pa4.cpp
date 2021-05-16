@@ -661,6 +661,7 @@ void Program::Clean(){
     CleanVariableArray();
     
     delete [] outputVariables;
+    outputVariables = nullptr;
     outputVariableCount = 0;
 }
 
@@ -670,6 +671,7 @@ void Program::CleanOperationArray(){
         operations[i] = nullptr;
     }
     delete [] operations;
+    operations = nullptr;
     operationCount = 0;
 }
 
@@ -679,6 +681,7 @@ void Program::CleanVariableArray(){
         variables[i] = nullptr;
     }
     delete [] variables;
+    variables = nullptr;
     variableCount = 0;
 }
 
@@ -688,6 +691,7 @@ void Program::CleanOutputArray(){
         outputVariables[i] = nullptr;
     }
     delete [] outputVariables;
+    outputVariables = nullptr;
     outputVariableCount = 0;
 }
 
