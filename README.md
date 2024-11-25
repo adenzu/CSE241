@@ -5,3 +5,5 @@
 | pa3             | 100   |
 | pa4             | 100   |
 | pa5             |  90   |
+
+**Letter Grades:** AA
